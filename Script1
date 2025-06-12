@@ -1,3 +1,22 @@
-while wait(1.5) do
-  fireproximityprompt(workspace:WaitForChild("Trophy").ProxHold.ProximityPrompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
-end
+-- Prevent infinite loop
+if getgenv().hasRejoined then return end
+getgenv().hasRejoined = true
+
+-- Wait until game is loaded
+repeat wait() until game:IsLoaded()
+
+-- Optional: Wait for ProximityPrompt
+local prompt = workspace:WaitForChild("Trophy"):WaitForChild("ProxHold"):WaitForChild("ProximityPrompt")
+
+-- Keep triggering it
+task.spawn(function()
+    while true do
+        wait(1.5)
+        fireproximityprompt(prompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
+    end
+end)
+
+-- Rejoin after 10 seconds (example)
+task.delay(10, function()
+    game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+end)
