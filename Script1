@@ -1,3 +1,4 @@
 while true do
   fireproximityprompt(workspace:WaitForChild("Trophy").ProxHold.ProximityPrompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
+  print("v1")
 end
