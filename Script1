@@ -25,6 +25,15 @@ local function runProximityAndTeleport()
 end
 
 local scriptSource = [[
+
+if syn and syn.queue_on_teleport then
+    syn.queue_on_teleport(scriptSource)
+elseif queue_on_teleport then
+    queue_on_teleport(scriptSource)
+else
+    warn("Your executor does not support queue_on_teleport.")
+end
+
 local function runProximityAndTeleport()
     local trophy = workspace:WaitForChild("Trophy")
     local proxHold = trophy:WaitForChild("ProxHold")
