@@ -37,6 +37,8 @@ local function runProximityAndTeleport()
 
     hrp.CFrame = proxHold.CFrame
 
+    wait()
+
     local success, result = pcall(function()
         fireproximityprompt(prompt, 1, Enum.KeyCode.E, player)
     end)
