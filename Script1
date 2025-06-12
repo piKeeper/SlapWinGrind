@@ -13,7 +13,7 @@ local function runProximityAndTeleport()
     wait(2)
     
     local success, result = pcall(function()
-        fireproximityprompt(prompt, 1, Enum.KeyCode.E, player)
+        fireproximityprompt(prompt, 2, Enum.KeyCode.E, player)
     end)
 
     if success then
