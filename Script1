@@ -1,1 +1,12 @@
-getgenv().AutoRejoinTriggered = nil
+-- On game start / script run:
+if getgenv().AutoRejoinTriggered then
+    getgenv().AutoRejoinTriggered = nil  -- Clear the flag
+end
+
+-- Manual join or first time — do nothing special yet
+
+-- Wait some time, then trigger auto rejoin
+fireproximityprompt(workspace:WaitForChild("Trophy").ProxHold.ProximityPrompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
+wait(5)
+getgenv().AutoRejoinTriggered = true
+game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
