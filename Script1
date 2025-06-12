@@ -1,11 +1,16 @@
--- Tell the executor to re-run this script after teleport (queue first!)
-if syn and syn.queue_on_teleport then
-    syn.queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/piKeeper/SlapWinGrind/main/Script1"))()]])
-elseif queue_on_teleport then
-    queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/piKeeper/SlapWinGrind/main/Script1"))()]])
+if getgenv().AutoRejoinTriggered then
+    -- Auto rejoin detected: clear flag to avoid duplication
+    getgenv().AutoRejoinTriggered = nil
+    
+    fireproximityprompt(workspace:WaitForChild("Trophy").ProxHold.ProximityPrompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
+    wait(1)  -- wait 1 second before teleporting again
+    
+    getgenv().AutoRejoinTriggered = true
+    game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+else
+    fireproximityprompt(workspace:WaitForChild("Trophy").ProxHold.ProximityPrompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
+    wait(1)  -- wait 1 second before teleporting again
+    
+    getgenv().AutoRejoinTriggered = true
+    game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
 end
-
--- Your main logic
-fireproximityprompt(workspace:WaitForChild("Trophy").ProxHold.ProximityPrompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
-wait(1)
-game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
