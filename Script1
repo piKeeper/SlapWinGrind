@@ -1,12 +1,11 @@
--- On game start / script run:
-if getgenv().AutoRejoinTriggered then
-    getgenv().AutoRejoinTriggered = nil  -- Clear the flag
-end
-
--- Manual join or first time — do nothing special yet
-
--- Wait some time, then trigger auto rejoin
-fireproximityprompt(workspace:WaitForChild("Trophy").ProxHold.ProximityPrompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
-wait(5)
-getgenv().AutoRejoinTriggered = true
+-- Your main logic
+fireproximityprompt(workspace.Trophy.ProxHold.ProximityPrompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
+wait(1)
 game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+
+-- Tell the executor to re-run this script after teleport
+if syn and syn.queue_on_teleport then
+    syn.queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/piKeeper/SlapWinGrind/refs/heads/main/Script1%22"))()]])
+elseif queue_on_teleport then
+    queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/piKeeper/SlapWinGrind/refs/heads/main/Script1%22"))()]])
+end
