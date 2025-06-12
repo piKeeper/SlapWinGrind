@@ -1,42 +1,73 @@
-local function runProximityAndTeleport()
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local PlaceId = game.PlaceId
+local currentJobId = game.JobId
+local player = Players.LocalPlayer
+
+local function runProximityAndServerHop()
     local trophy = workspace:WaitForChild("Trophy")
     local proxHold = trophy:WaitForChild("ProxHold")
     local prompt = proxHold:WaitForChild("ProximityPrompt")
 
     prompt.HoldDuration = 0
 
-    local player = game.Players.LocalPlayer
     local char = player.Character or player.CharacterAdded:Wait()
     local hrp = char:WaitForChild("HumanoidRootPart")
+    hrp.CFrame = proxHold.CFrame + Vector3.new(0, 3, 0)
 
-    -- Move player to prompt position
-    hrp.CFrame = proxHold.CFrame -- slightly above prompt to avoid clipping
-    
     wait(2)
-    
+
     local success, result = pcall(function()
         fireproximityprompt(prompt, 1, Enum.KeyCode.E, player)
     end)
 
     if success then
-        print("ProximityPrompt fired successfully.")
-        wait(.5)
-        game:GetService("TeleportService"):Teleport(game.PlaceId, player)
+        print("✅ ProximityPrompt fired successfully.")
+
+        -- Get list of public servers
+        local servers = {}
+        local cursor = ""
+        repeat
+            local url = ("https://games.roblox.com/v1/games/%d/servers/Public?sortOrder=Asc&limit=100%s")
+                :format(PlaceId, cursor ~= "" and "&cursor="..cursor or "")
+            local ok, res = pcall(game.HttpGet, game, url)
+            if not ok then
+                warn("Failed to fetch server list:", res)
+                break
+            end
+
+            local data = HttpService:JSONDecode(res)
+            for _, s in ipairs(data.data or {}) do
+                if s.id ~= currentJobId and s.playing < s.maxPlayers then
+                    table.insert(servers, s.id)
+                end
+            end
+            cursor = data.nextPageCursor or ""
+        until (#servers > 0) or cursor == ""
+
+        if #servers > 0 then
+            print("➡️ Hopping to server:", servers[1])
+            TeleportService:TeleportToPlaceInstance(PlaceId, servers[1], player)
+        else
+            warn("No available servers found.")
+        end
     else
-        warn("Failed to fire ProximityPrompt:", result)
+        warn("❌ Failed to fire ProximityPrompt:", result)
     end
 end
 
-local scriptSource = [[
+-- Properly queue this script to run after teleport
+local queueCode = [[
     loadstring(game:HttpGet("https://raw.githubusercontent.com/piKeeper/SlapWinGrind/refs/heads/main/Script1"))()
 ]]
 
 if syn and syn.queue_on_teleport then
-    syn.queue_on_teleport(scriptSource)
+    syn.queue_on_teleport(queueCode)
 elseif queue_on_teleport then
-    queue_on_teleport(scriptSource)
+    queue_on_teleport(queueCode)
 else
-    warn("Your executor does not support queue_on_teleport.")
+    warn("Your executor doesn't support queue_on_teleport.")
 end
 
-runProximityAndTeleport()
+runProximityAndServerHop()
