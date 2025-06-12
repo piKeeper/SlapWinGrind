@@ -10,7 +10,7 @@ local function runProximityAndTeleport()
     -- Move player to prompt position
     hrp.CFrame = proxHold.CFrame -- slightly above prompt to avoid clipping
 
-    wait(1)
+    wait(5)
 
     local success, result = pcall(function()
         fireproximityprompt(prompt, 1, Enum.KeyCode.E, player)
