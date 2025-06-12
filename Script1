@@ -1,9 +1,62 @@
-local success, result = pcall(function()
-    fireproximityprompt(workspace:WaitForChild("Trophy"):WaitForChild("ProxHold"):WaitForChild("ProximityPrompt"), 1, Enum.KeyCode.E, game.Players.LocalPlayer)
-end)
+local function runProximityAndTeleport()
+    local trophy = workspace:WaitForChild("Trophy")
+    local proxHold = trophy:WaitForChild("ProxHold")
+    local prompt = proxHold:WaitForChild("ProximityPrompt")
 
-if success then
-    print("ProximityPrompt triggered successfully.")
-else
-    warn("Failed to trigger ProximityPrompt:", result)
+    local player = game.Players.LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
+
+    -- Move player to prompt position
+    hrp.CFrame = CFrame.new(proxHold.Position + Vector3.new(0, 3, 0)) -- slightly above prompt to avoid clipping
+
+    local success, result = pcall(function()
+        fireproximityprompt(prompt, 1, Enum.KeyCode.E, player)
+    end)
+
+    if success then
+        print("ProximityPrompt fired successfully.")
+        wait(1)
+        game:GetService("TeleportService"):Teleport(game.PlaceId, player)
+    else
+        warn("Failed to fire ProximityPrompt:", result)
+    end
 end
+
+local scriptSource = [[
+local function runProximityAndTeleport()
+    local trophy = workspace:WaitForChild("Trophy")
+    local proxHold = trophy:WaitForChild("ProxHold")
+    local prompt = proxHold:WaitForChild("ProximityPrompt")
+
+    local player = game.Players.LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
+
+    hrp.CFrame = CFrame.new(proxHold.Position + Vector3.new(0, 3, 0))
+
+    local success, result = pcall(function()
+        fireproximityprompt(prompt, 1, Enum.KeyCode.E, player)
+    end)
+
+    if success then
+        print("ProximityPrompt fired successfully.")
+        wait(1)
+        game:GetService("TeleportService"):Teleport(game.PlaceId, player)
+    else
+        warn("Failed to fire ProximityPrompt:", result)
+    end
+end
+
+runProximityAndTeleport()
+]]
+
+if syn and syn.queue_on_teleport then
+    syn.queue_on_teleport(scriptSource)
+elseif queue_on_teleport then
+    queue_on_teleport(scriptSource)
+else
+    warn("Your executor does not support queue_on_teleport.")
+end
+
+runProximityAndTeleport()
