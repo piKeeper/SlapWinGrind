@@ -1,22 +1,45 @@
--- Prevent infinite loop
-if getgenv().hasRejoined then return end
-getgenv().hasRejoined = true
-
--- Wait until game is loaded
+-- Wait for game to load fully
 repeat wait() until game:IsLoaded()
 
--- Optional: Wait for ProximityPrompt
-local prompt = workspace:WaitForChild("Trophy"):WaitForChild("ProxHold"):WaitForChild("ProximityPrompt")
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local LocalPlayer = Players.LocalPlayer
 
--- Keep triggering it
-task.spawn(function()
-    while true do
-        wait(1.5)
-        fireproximityprompt(prompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
-    end
-end)
+-- Read teleport data
+local joinData = LocalPlayer:GetJoinData()
+local teleportData = joinData and joinData.TeleportData
 
--- Rejoin after 10 seconds (example)
-task.delay(10, function()
-    game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+-- Check if we rejoined via script
+if teleportData and teleportData.fromScript then
+    -- ✅ Only runs if this was a scripted rejoin
+
+    -- Wait for ProximityPrompt
+    local prompt
+    repeat
+        pcall(function()
+            prompt = workspace:WaitForChild("Trophy", 5)
+                      :WaitForChild("ProxHold", 5)
+                      :WaitForChild("ProximityPrompt", 5)
+        end)
+        wait(0.5)
+    until prompt
+
+    -- Fire prompt repeatedly
+    task.spawn(function()
+        while true do
+            wait(1.5)
+            fireproximityprompt(prompt, 1, Enum.KeyCode.E, LocalPlayer)
+        end
+    end)
+end
+
+-- Hypothetical trigger condition to auto-rejoin (after 10 seconds)
+task.delay(5, function()
+    -- Set teleport data to detect this is script-triggered
+    local teleportInfo = {
+        fromScript = true
+    }
+
+    -- Auto rejoin same game
+    TeleportService:Teleport(game.PlaceId, LocalPlayer, teleportInfo)
 end)
