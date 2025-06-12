@@ -3,6 +3,8 @@ local function runProximityAndTeleport()
     local proxHold = trophy:WaitForChild("ProxHold")
     local prompt = proxHold:WaitForChild("ProximityPrompt")
 
+    prompt.HoldDuration = 0
+
     local player = game.Players.LocalPlayer
     local char = player.Character or player.CharacterAdded:Wait()
     local hrp = char:WaitForChild("HumanoidRootPart")
