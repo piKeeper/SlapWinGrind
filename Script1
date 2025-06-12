@@ -1,12 +1,24 @@
--- Queue the line to run after teleport
-if syn and syn.queue_on_teleport then
-    syn.queue_on_teleport([[print("Hello")]])
-elseif queue_on_teleport then
-    queue_on_teleport([[print("Hello")]])
-else
-    warn("queue_on_teleport not supported in this executor.")
-end
+-- Attempt to trigger the ProximityPrompt
+local success, result = pcall(function()
+    fireproximityprompt(workspace:WaitForChild("Trophy"):WaitForChild("ProxHold"):WaitForChild("ProximityPrompt"), 1, Enum.KeyCode.E, game.Players.LocalPlayer)
+end)
 
--- Rejoin the same place to trigger the queued code
-wait(1)
-game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+-- Check if the fire was successful
+if success then
+    print("ProximityPrompt fired successfully.")
+
+    -- Queue a print for when the player rejoins
+    if syn and syn.queue_on_teleport then
+        syn.queue_on_teleport([[print("Hello")]])
+    elseif queue_on_teleport then
+        queue_on_teleport([[print("Hello")]])
+    else
+        warn("Your executor doesn't support queue_on_teleport.")
+    end
+
+    -- Rejoin the same place
+    wait(1)
+    game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+else
+    warn("Failed to fire ProximityPrompt:", result)
+end
