@@ -1,18 +1,12 @@
-if getgenv().AutoRejoinTriggered then
-    -- Auto rejoin detected: clear flag to avoid duplication
-    getgenv().AutoRejoinTriggered = nil
-    local success, result = pcall(function()
-        fireproximityprompt(workspace:WaitForChild("Trophy").ProxHold.ProximityPrompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
-    end)
-    print(success, result)
-    wait(1)  -- wait 1 second before teleporting again
-    
-    --getgenv().AutoRejoinTriggered = true
-    --game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+-- Queue the line to run after teleport
+if syn and syn.queue_on_teleport then
+    syn.queue_on_teleport([[print("Hello")]])
+elseif queue_on_teleport then
+    queue_on_teleport([[print("Hello")]])
 else
-    fireproximityprompt(workspace:WaitForChild("Trophy").ProxHold.ProximityPrompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
-    wait(1)  -- wait 1 second before teleporting again
-    
-    getgenv().AutoRejoinTriggered = true
-    game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+    warn("queue_on_teleport not supported in this executor.")
 end
+
+-- Rejoin the same place to trigger the queued code
+wait(1)
+game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
