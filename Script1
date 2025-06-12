@@ -47,8 +47,22 @@ local function runProximityAndServerHop()
         until (#servers > 0) or cursor == ""
 
         if #servers > 0 then
-            print("➡️ Hopping to server:", servers[1])
-            TeleportService:TeleportToPlaceInstance(PlaceId, servers[1], player)
+            local teleported = false
+            for _, serverId in ipairs(servers) do
+                local ok, err = pcall(function()
+                    print("➡️ Attempting to hop to server:", serverId)
+                    TeleportService:TeleportToPlaceInstance(PlaceId, serverId, player)
+                    teleported = true
+                end)
+                if ok then
+                    break
+                else
+                    warn("❌ Teleport failed:", err)
+                end
+            end
+            if not teleported then
+                warn("⚠️ All teleport attempts failed.")
+            end
         else
             warn("No available servers found.")
         end
