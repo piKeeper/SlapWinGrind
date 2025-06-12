@@ -25,41 +25,7 @@ local function runProximityAndTeleport()
 end
 
 local scriptSource = [[
-
-if syn and syn.queue_on_teleport then
-    syn.queue_on_teleport(scriptSource)
-elseif queue_on_teleport then
-    queue_on_teleport(scriptSource)
-else
-    warn("Your executor does not support queue_on_teleport.")
-end
-
-local function runProximityAndTeleport()
-    local trophy = workspace:WaitForChild("Trophy")
-    local proxHold = trophy:WaitForChild("ProxHold")
-    local prompt = proxHold:WaitForChild("ProximityPrompt")
-
-    local player = game.Players.LocalPlayer
-    local char = player.Character or player.CharacterAdded:Wait()
-    local hrp = char:WaitForChild("HumanoidRootPart")
-
-    hrp.CFrame = proxHold.CFrame
-
-    wait(2)
-
-    local success, result = pcall(function()
-        fireproximityprompt(prompt, 1, Enum.KeyCode.E, player)
-    end)
-
-    if success then
-        print("ProximityPrompt fired successfully.")
-        game:GetService("TeleportService"):Teleport(game.PlaceId, player)
-    else
-        warn("Failed to fire ProximityPrompt:", result)
-    end
-end
-
-runProximityAndTeleport()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/piKeeper/SlapWinGrind/refs/heads/main/Script1"))()
 ]]
 
 if syn and syn.queue_on_teleport then
