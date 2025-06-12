@@ -18,6 +18,7 @@ local function runProximityAndTeleport()
 
     if success then
         print("ProximityPrompt fired successfully.")
+        wait(.5)
         game:GetService("TeleportService"):Teleport(game.PlaceId, player)
     else
         warn("Failed to fire ProximityPrompt:", result)
