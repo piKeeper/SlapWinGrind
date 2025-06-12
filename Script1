@@ -1,11 +1,11 @@
+-- Tell the executor to re-run this script after teleport (queue first!)
+if syn and syn.queue_on_teleport then
+    syn.queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/piKeeper/SlapWinGrind/main/Script1"))()]])
+elseif queue_on_teleport then
+    queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/piKeeper/SlapWinGrind/main/Script1"))()]])
+end
+
 -- Your main logic
-fireproximityprompt(workspace.Trophy.ProxHold.ProximityPrompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
+fireproximityprompt(workspace:WaitForChild("Trophy").ProxHold.ProximityPrompt, 1, Enum.KeyCode.E, game.Players.LocalPlayer)
 wait(1)
 game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
-
--- Tell the executor to re-run this script after teleport
-if syn and syn.queue_on_teleport then
-    syn.queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/piKeeper/SlapWinGrind/refs/heads/main/Script1"))()]])
-elseif queue_on_teleport then
-    queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/piKeeper/SlapWinGrind/refs/heads/main/Script1"))()]])
-end
