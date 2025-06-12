@@ -9,16 +9,15 @@ local function runProximityAndTeleport()
 
     -- Move player to prompt position
     hrp.CFrame = proxHold.CFrame -- slightly above prompt to avoid clipping
-
-    wait(1)
-
+    
+    wait(2)
+    
     local success, result = pcall(function()
         fireproximityprompt(prompt, 1, Enum.KeyCode.E, player)
     end)
 
     if success then
         print("ProximityPrompt fired successfully.")
-        wait(1)
         game:GetService("TeleportService"):Teleport(game.PlaceId, player)
     else
         warn("Failed to fire ProximityPrompt:", result)
@@ -37,7 +36,7 @@ local function runProximityAndTeleport()
 
     hrp.CFrame = proxHold.CFrame
 
-    wait(1)
+    wait(2)
 
     local success, result = pcall(function()
         fireproximityprompt(prompt, 1, Enum.KeyCode.E, player)
@@ -45,7 +44,6 @@ local function runProximityAndTeleport()
 
     if success then
         print("ProximityPrompt fired successfully.")
-        wait(1)
         game:GetService("TeleportService"):Teleport(game.PlaceId, player)
     else
         warn("Failed to fire ProximityPrompt:", result)
