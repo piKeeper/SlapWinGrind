@@ -1,19 +1,16 @@
--- Wait for game to load fully
+-- Wait for game to fully load
 repeat wait() until game:IsLoaded()
 
 local Players = game:GetService("Players")
 local TeleportService = game:GetService("TeleportService")
 local LocalPlayer = Players.LocalPlayer
 
--- Read teleport data
-local joinData = LocalPlayer:GetJoinData()
-local teleportData = joinData and joinData.TeleportData
+-- Check if this is an auto rejoin (persisted via getgenv)
+if getgenv().AutoRejoinTriggered then
+    -- Clear flag so it doesn’t repeat next manual join
+    getgenv().AutoRejoinTriggered = nil
 
--- Check if we rejoined via script
-if teleportData and teleportData.fromScript then
-    -- ✅ Only runs if this was a scripted rejoin
-
-    -- Wait for ProximityPrompt
+    -- ✅ Only runs after script-triggered rejoin
     local prompt
     repeat
         pcall(function()
@@ -24,7 +21,7 @@ if teleportData and teleportData.fromScript then
         wait(0.5)
     until prompt
 
-    -- Fire prompt repeatedly
+    -- Start firing the prompt repeatedly
     task.spawn(function()
         while true do
             wait(1.5)
@@ -33,13 +30,11 @@ if teleportData and teleportData.fromScript then
     end)
 end
 
--- Hypothetical trigger condition to auto-rejoin (after 10 seconds)
-task.delay(5, function()
-    -- Set teleport data to detect this is script-triggered
-    local teleportInfo = {
-        fromScript = true
-    }
+-- Optional: Wait a few seconds before auto-rejoining
+task.delay(10, function()
+    -- Set the rejoin flag
+    getgenv().AutoRejoinTriggered = true
 
-    -- Auto rejoin same game
-    TeleportService:Teleport(game.PlaceId, LocalPlayer, teleportInfo)
+    -- Rejoin the same game
+    TeleportService:Teleport(game.PlaceId, LocalPlayer)
 end)
